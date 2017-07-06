@@ -10,8 +10,7 @@
  *
  */
 
-(function($)
-{
+(function ($) {
 	// SORT INTERNAL
 	function internalSort(a, b) {
 		var compA = $(a).text().toUpperCase();
@@ -20,7 +19,7 @@
 	};
 
 	var methods = {
-		init : function(options) {
+		init: function (options) {
 			var o = {
 				selectedPosition: 'right',
 				moveOptions: true,
@@ -42,7 +41,7 @@
 			};
 
 			return this.each(function () {
-				var	el = $(this);
+				var el = $(this);
 				var data = el.data('multiselect2side');
 
 				if (options)
@@ -51,12 +50,12 @@
 				if (!data)
 					el.data('multiselect2side', o);
 
-				var	originalName = $(this).attr("name");
+				var originalName = $(this).attr("name");
 				if (originalName.indexOf('[') != -1)
 					originalName = originalName.substring(0, originalName.indexOf('['));
 
-				var	nameDx = originalName + "ms2side__dx";
-				var	nameSx = originalName + "ms2side__sx";
+				var nameDx = originalName + "ms2side__dx";
+				var nameSx = originalName + "ms2side__sx";
 				var size = $(this).attr("size");
 				// SIZE MIN
 				if (size < o.minSize) {
@@ -65,20 +64,19 @@
 				}
 
 				// UP AND DOWN
-				var divUpDown =
-						"<div class='ms2side__updown'>" +
-							"<p class='SelSort' title='Sort'>" + o.labelSort + "</p>" +
-							"<p class='MoveTop' title='Move on top selected option'>" + o.labelTop + "</p>" +
-							"<p class='MoveUp' title='Move up selected option'>" + o.labelUp + "</p>" +
-							"<p class='MoveDown' title='Move down selected option'>" + o.labelDown + "</p>" +
-							"<p class='MoveBottom' title='Move on bottom selected option'>" + o.labelBottom + "</p>" +
-						"</div>";
+				var divUpDown = "<div class='ms2side__updown'>";
+				if (o.labelSort != false) divUpDown += "<p class='SelSort' title='Sort'>" + o.labelSort + "</p>";
+				if (o.labelTop != false) divUpDown += "<p class='MoveTop' title='Move on top selected option'>" + o.labelTop + "</p>";
+				if (o.labelUp != false) divUpDown += "<p class='MoveUp' title='Move up selected option'>" + o.labelUp + "</p>";
+				if (o.labelDown != false) divUpDown += "<p class='MoveDown' title='Move down selected option'>" + o.labelDown + "</p>";
+				if (o.labelBottom != false) divUpDown += "<p class='MoveBottom' title='Move on bottom selected option'>" + o.labelBottom + "</p>";
+				divUpDown += "</div>";
 
 				// INPUT TEXT FOR SEARCH OPTION
-				var	leftSearch = false, rightSearch = false;
+				var leftSearch = false, rightSearch = false;
 				// BOTH SEARCH AND OPTGROUP SEARCH
 				if (o.search != false && o.optGroupSearch != false) {
-					var ss = 
+					var ss =
 						o.optGroupSearch + "<select class='small' ><option value=__null__> </option></select> " +
 						o.search + "<input class='small' type='text' /><a href='#'> </a>";
 
@@ -88,7 +86,7 @@
 						rightSearch = ss;
 				}
 				else if (o.search != false) {
-					var	ss = o.search + "<input type='text' /><a href='#'> </a>";
+					var ss = o.search + "<input type='text' /><a href='#'> </a>";
 
 					if (o.selectedPosition == 'right')
 						leftSearch = ss;
@@ -96,7 +94,7 @@
 						rightSearch = ss;
 				}
 				else if (o.optGroupSearch != false) {
-					var	ss = o.optGroupSearch + "<select><option value=__null__> </option></select>";
+					var ss = o.optGroupSearch + "<select><option value=__null__> </option></select>";
 
 					if (o.selectedPosition == 'right')
 						leftSearch = ss;
@@ -105,64 +103,64 @@
 				}
 
 				// CREATE NEW ELEMENT (AND HIDE IT) AFTER THE HIDDED ORGINAL SELECT
-				var htmlToAdd = 
+				var htmlToAdd =
 					"<div class='ms2side__div'>" +
-							((o.selectedPosition != 'right' && o.moveOptions) ? divUpDown : "") +
-						"<div class='ms2side__select'>" +
-							((o.labelsx || leftSearch != false) ? ("<div class='ms2side__header'>" + (leftSearch != false ? leftSearch : o.labelsx) + "</div>") : "") +
-							"<select title='" + o.labelsx + "' name='" + nameSx + "' id='" + nameSx + "' size='" + size + "' multiple='multiple' ></select>" +
-						"</div>" +
-						"<div class='ms2side__options'>" +
-							((o.selectedPosition == 'right')
-							?
-							("<p class='AddOne' title='Add Selected'>&rsaquo;</p>" +
+					((o.selectedPosition != 'right' && o.moveOptions) ? divUpDown : "") +
+					"<div class='ms2side__select'>" +
+					((o.labelsx || leftSearch != false) ? ("<div class='ms2side__header'>" + (leftSearch != false ? leftSearch : o.labelsx) + "</div>") : "") +
+					"<select title='" + o.labelsx + "' name='" + nameSx + "' id='" + nameSx + "' size='" + size + "' multiple='multiple' ></select>" +
+					"</div>" +
+					"<div class='ms2side__options'>" +
+					((o.selectedPosition == 'right')
+						?
+						("<p class='AddOne' title='Add Selected'>&rsaquo;</p>" +
 							"<p class='AddAll' title='Add All'>&raquo;</p>" +
 							"<p class='RemoveOne' title='Remove Selected'>&lsaquo;</p>" +
 							"<p class='RemoveAll' title='Remove All'>&laquo;</p>")
-							:
-							("<p class='AddOne' title='选择'><i class='icon-chevron-left'></i></p>" +
+						:
+						("<p class='AddOne' title='选择'><i class='icon-chevron-left'></i></p>" +
 							"<p class='AddAll' title='全选'><i class='icon-backward'></i></p>" +
 							"<p class='RemoveOne' title='移除'><i class='icon-chevron-right'></i></p>" +
 							"<p class='RemoveAll' title='清空'><i class='icon-forward'></i></p>")
-							) +
-						"</div>" +
-						"<div class='ms2side__select'>" +
-							((o.labeldx || rightSearch != false) ? ("<div class='ms2side__header'>" + (rightSearch != false ? rightSearch : o.labeldx) + "</div>") : "") +
-							"<select title='" + o.labeldx + "' name='" + nameDx + "' id='" + nameDx + "' size='" + size + "' multiple='multiple' ></select>" +
-						"</div>" +
-						((o.selectedPosition == 'right' && o.moveOptions) ? divUpDown : "") +
+					) +
+					"</div>" +
+					"<div class='ms2side__select'>" +
+					((o.labeldx || rightSearch != false) ? ("<div class='ms2side__header'>" + (rightSearch != false ? rightSearch : o.labeldx) + "</div>") : "") +
+					"<select title='" + o.labeldx + "' name='" + nameDx + "' id='" + nameDx + "' size='" + size + "' multiple='multiple' ></select>" +
+					"</div>" +
+					((o.selectedPosition == 'right' && o.moveOptions) ? divUpDown : "") +
 					"</div>";
 				el.after(htmlToAdd).hide();
 
 				// ELEMENTS
 				var allSel = el.next().children(".ms2side__select").children("select");
-				var	leftSel = (o.selectedPosition == 'right') ? allSel.eq(0) : allSel.eq(1);
-				var	rightSel = (o.selectedPosition == 'right') ? allSel.eq(1) : allSel.eq(0);
+				var leftSel = (o.selectedPosition == 'right') ? allSel.eq(0) : allSel.eq(1);
+				var rightSel = (o.selectedPosition == 'right') ? allSel.eq(1) : allSel.eq(0);
 				// HEIGHT DIV
-				var	heightDiv = $(".ms2side__select").eq(0).height();
+				var heightDiv = $(".ms2side__select").eq(0).height();
 
 				// SELECT optgroup
 				var searchSelect = $();
 
 				// SEARCH INPUT
 				var searchInput = $(this).next().find("input:text");
-				var	removeFilter = searchInput.next().hide();
-				var	toid = false;
+				var removeFilter = searchInput.next().hide();
+				var toid = false;
 				var searchV = false;
 
 
 				// SELECT optgroup - ADD ALL OPTGROUP AS OPTION
 				if (o.optGroupSearch != false) {
-					var	lastOptGroupSearch = false;
+					var lastOptGroupSearch = false;
 
 					searchSelect = $(this).next().find("select").eq(0);
 
-					el.children("optgroup").each(function() {
+					el.children("optgroup").each(function () {
 						if (searchSelect.find("[value='" + $(this).attr("label") + "']").size() == 0)
 							searchSelect.append("<option value='" + $(this).attr("label") + "'>" + $(this).attr("label") + "</option>");
 					});
-					searchSelect.change(function() {
-						var	sEl = $(this);
+					searchSelect.change(function () {
+						var sEl = $(this);
 
 						if (sEl.val() != lastOptGroupSearch) {
 
@@ -175,7 +173,7 @@
 								// fto();
 							}
 
-							setTimeout(function() {
+							setTimeout(function () {
 								if (sEl.val() == "__null__") {
 									els = el.find("option:not(:selected)");
 								}
@@ -184,7 +182,7 @@
 
 								// REMOVE ORIGINAL ELEMENTS AND ADD OPTION OF OPTGROUP SELECTED
 								leftSel.find("option").remove();
-								els.each(function() {
+								els.each(function () {
 									leftSel.append($(this).clone());
 								});
 								lastOptGroupSearch = sEl.val();
@@ -196,9 +194,9 @@
 
 
 				// SEARCH FUNCTION
-				var	fto = function() {
-					var	els = leftSel.children();
-					var	toSearch = el.find("option:not(:selected)");
+				var fto = function () {
+					var els = leftSel.children();
+					var toSearch = el.find("option:not(:selected)");
 
 					// RESET OptGroupSearch
 					lastOptGroupSearch = "__null__";
@@ -214,15 +212,15 @@
 					searchV = searchInput.val();
 
 					// A LITTLE TIMEOUT TO VIEW WAIT CLASS ON INPUT ON IE
-					setTimeout(function() {
+					setTimeout(function () {
 						leftSel.children().remove();
 						if (searchV == "") {
 							toSearch.clone().appendTo(leftSel).removeAttr("selected");
 							removeFilter.hide();
 						}
 						else {
-							toSearch.each(function() {
-								var	myText = $(this).text();
+							toSearch.each(function () {
+								var myText = $(this).text();
 
 								if (o.caseSensitive)
 									find = myText.indexOf(searchV);
@@ -234,7 +232,7 @@
 							});
 
 							if (leftSel.children().length == 0)
-								searchInput.css({'border': '1px red solid'});
+								searchInput.css({ 'border': '1px red solid' });
 
 							removeFilter.show();
 							leftSel.trigger('change');
@@ -246,7 +244,7 @@
 
 
 				// REMOVE FILTER ON SEARCH FUNCTION
-				removeFilter.click(function() {
+				removeFilter.click(function () {
 					clearTimeout(toid);
 					searchInput.val("");
 					fto();
@@ -254,17 +252,17 @@
 				});
 
 				// ON CHANGE TEXT INPUT
-				searchInput.keyup(function() {
+				searchInput.keyup(function () {
 					clearTimeout(toid);
 					toid = setTimeout(fto, o.delay);
 				});
 
 
 				// CENTER MOVE OPTIONS AND UPDOWN OPTIONS
-				$(this).next().find('.ms2side__options, .ms2side__updown').each(function(){
-					var	top = ((heightDiv/2) - ($(this).height()/2));
+				$(this).next().find('.ms2side__options, .ms2side__updown').each(function () {
+					var top = ((heightDiv / 2) - ($(this).height() / 2));
 					if (top > 0)
-						$(this).css('padding-top',  top + 'px' );
+						$(this).css('padding-top', top + 'px');
 				})
 
 				// MOVE SELECTED OPTION TO RIGHT, NOT SELECTED TO LEFT
@@ -272,16 +270,16 @@
 				$(this).find("option:not(:selected)").clone().appendTo(leftSel);
 
 				// SELECT FIRST LEFT ITEM AND DESELECT IN RIGHT (NOT IN IE6)
-				if (!($.browser.msie && $.browser.version == '6.0')) {
+				if (!($.browser && $.browser.msie && $.browser.version == '6.0')) {
 					leftSel.find("option").eq(0).attr("selected", true);
 					rightSel.children().removeAttr("selected");
 				}
 
 				// ON CHANGE SORT SELECTED OPTIONS
-				var	nLastAutosort = 0;
+				var nLastAutosort = 0;
 				if (o.autoSort)
-					allSel.change(function() {
-						var	selectDx = rightSel.find("option");
+					allSel.change(function () {
+						var selectDx = rightSel.find("option");
 
 						if (selectDx.length != nLastAutosort) {
 							// SORT SELECTED ELEMENT
@@ -289,7 +287,7 @@
 							// FIRST REMOVE FROM ORIGINAL SELECT
 							el.find("option:selected").remove();
 							// AFTER ADD ON ORIGINAL AND RIGHT SELECT
-							selectDx.each(function() {
+							selectDx.each(function () {
 								rightSel.append($(this).clone());
 								$(this).appendTo(el).attr("selected", true);
 								//el.append($(this).attr("selected", true));		HACK IE6
@@ -299,17 +297,17 @@
 					});
 
 				// ON CHANGE SORT AVAILABLE OPTIONS (NOT NECESSARY IN ORIGINAL SELECT)
-				var	nLastAutosortAvailable = 0;
+				var nLastAutosortAvailable = 0;
 				if (o.autoSortAvailable)
-					allSel.change(function() {
-						var	selectSx = leftSel.find("option");
+					allSel.change(function () {
+						var selectSx = leftSel.find("option");
 
 						if (selectSx.length != nLastAutosortAvailable) {
 							// SORT SELECTED ELEMENT
 							selectSx.sort(internalSort);
 							// REMOVE ORIGINAL ELEMENTS AND ADD SORTED
 							leftSel.find("option").remove();
-							selectSx.each(function() {
+							selectSx.each(function () {
 								leftSel.append($(this).clone());
 							});
 							nLastAutosortAvailable = selectSx.length;
@@ -317,18 +315,17 @@
 					});
 
 				// ON CHANGE REFRESH ALL BUTTON STATUS
-				allSel.change(function() {
+				allSel.change(function () {
 					// HACK FOR IE6 (SHOW AND HIDE ORIGINAL SELECT)
-					if ($.browser.msie && $.browser.version == '6.0')
-						el.show().hide();
-					var	div = $(this).parent().parent();
-					var	selectSx = leftSel.children();
-					var	selectDx = rightSel.children();
-					var	selectedSx = leftSel.find("option:selected");
-					var	selectedDx = rightSel.find("option:selected");
+					if ($.browser && $.browser.msie && $.browser.version == '6.0') el.show().hide();
+					var div = $(this).parent().parent(),
+						selectSx = leftSel.children(),
+						selectDx = rightSel.children(),
+						selectedSx = leftSel.find("option:selected"),
+						selectedDx = rightSel.find("option:selected");
 
 					if (selectedSx.size() == 0 ||
-							(o.maxSelected >= 0 && (selectedSx.size() + selectDx.size()) > o.maxSelected))
+						(o.maxSelected >= 0 && (selectedSx.size() + selectDx.size()) > o.maxSelected))
 						div.find(".AddOne").addClass('ms2side__hide');
 					else
 						div.find(".AddOne").removeClass('ms2side__hide');
@@ -349,7 +346,7 @@
 					}
 
 					if (selectSx.size() == 0 ||
-							(o.maxSelected >= 0 && selectSx.size() >= o.maxSelected))
+						(o.maxSelected >= 0 && selectSx.size() >= o.maxSelected))
 						div.find(".AddAll").addClass('ms2side__hide');
 					else
 						div.find(".AddAll").removeClass('ms2side__hide');
@@ -362,7 +359,7 @@
 
 				// DOUBLE CLICK ON LEFT SELECT OPTION
 				leftSel.dblclick(function () {
-					$(this).find("option:selected").each(function(i, selected){
+					$(this).find("option:selected").each(function (i, selected) {
 
 						if (o.maxSelected < 0 || rightSel.children().size() < o.maxSelected) {
 							$(this).remove().appendTo(rightSel);
@@ -374,7 +371,7 @@
 
 				// DOUBLE CLICK ON RIGHT SELECT OPTION
 				rightSel.dblclick(function () {
-					$(this).find("option:selected").each(function(i, selected){
+					$(this).find("option:selected").each(function (i, selected) {
 						$(this).remove().appendTo(leftSel);
 						el.find("[value='" + $(selected).val() + "']").removeAttr("selected").remove().appendTo(el);
 					});
@@ -390,7 +387,7 @@
 				$(this).next().find('.ms2side__options').children().click(function () {
 					if (!$(this).hasClass("ms2side__hide")) {
 						if ($(this).hasClass("AddOne")) {
-							leftSel.find("option:selected").each(function(i, selected){
+							leftSel.find("option:selected").each(function (i, selected) {
 								$(this).remove().appendTo(rightSel);
 								el.find("[value='" + $(selected).val() + "']").remove().appendTo(el).attr("selected", true);
 							});
@@ -398,7 +395,7 @@
 						else if ($(this).hasClass("AddAll")) {	// ALL SELECTED
 							// TEST IF HAVE A FILTER OR A SELECT OPTGROUP
 							if (removeFilter.is(":visible") || (searchSelect.length > 0 && searchSelect.val() != "__null__"))
-								leftSel.children().each(function(i, selected){
+								leftSel.children().each(function (i, selected) {
 									$(this).remove().appendTo(rightSel);
 									el.find("[value='" + $(selected).val() + "']").remove().appendTo(el).attr("selected", true);
 								});
@@ -409,7 +406,7 @@
 							}
 						}
 						else if ($(this).hasClass("RemoveOne")) {
-							rightSel.find("option:selected").each(function(i, selected){
+							rightSel.find("option:selected").each(function (i, selected) {
 								$(this).remove().appendTo(leftSel);
 								el.find("[value='" + $(selected).val() + "']").remove().appendTo(el).removeAttr("selected");
 							});
@@ -435,8 +432,8 @@
 
 				// CLICK ON UP - DOWN
 				$(this).next().find('.ms2side__updown').children().click(function () {
-					var	selectedDx = rightSel.find("option:selected");
-					var	selectDx = rightSel.find("option");
+					var selectedDx = rightSel.find("option:selected");
+					var selectDx = rightSel.find("option");
 
 					if (!$(this).hasClass("ms2side__hide")) {
 						if ($(this).hasClass("SelSort")) {
@@ -445,43 +442,43 @@
 							// FIRST REMOVE FROM ORIGINAL SELECT
 							el.find("option:selected").remove();
 							// AFTER ADD ON ORIGINAL AND RIGHT SELECT
-							selectDx.each(function() {
+							selectDx.each(function () {
 								rightSel.append($(this).clone().attr("selected", true));
 								el.append($(this).attr("selected", true));
 							});
 						}
 						else if ($(this).hasClass("MoveUp")) {
-							var	prev = selectedDx.first().prev();
-							var	hPrev = el.find("[value='" + prev.val() + "']");
+							var prev = selectedDx.first().prev();
+							var hPrev = el.find("[value='" + prev.val() + "']");
 
-							selectedDx.each(function() {
+							selectedDx.each(function () {
 								$(this).insertBefore(prev);
 								el.find("[value='" + $(this).val() + "']").insertBefore(hPrev);	// HIDDEN SELECT
 							});
 						}
 						else if ($(this).hasClass("MoveDown")) {
-							var	next = selectedDx.last().next();
-							var	hNext = el.find("[value='" + next.val() + "']");
+							var next = selectedDx.last().next();
+							var hNext = el.find("[value='" + next.val() + "']");
 
-							selectedDx.each(function() {
+							selectedDx.each(function () {
 								$(this).insertAfter(next);
 								el.find("[value='" + $(this).val() + "']").insertAfter(hNext);	// HIDDEN SELECT
 							});
 						}
 						else if ($(this).hasClass("MoveTop")) {
-							var	first = selectDx.first();
-							var	hFirst = el.find("[value='" + first.val() + "']");
+							var first = selectDx.first();
+							var hFirst = el.find("[value='" + first.val() + "']");
 
-							selectedDx.each(function() {
+							selectedDx.each(function () {
 								$(this).insertBefore(first);
 								el.find("[value='" + $(this).val() + "']").insertBefore(hFirst);	// HIDDEN SELECT
 							});
 						}
 						else if ($(this).hasClass("MoveBottom")) {
-							var	last = selectDx.last();
-							var	hLast = el.find("[value='" + last.val() + "']");
+							var last = selectDx.last();
+							var hLast = el.find("[value='" + last.val() + "']");
 
-							selectedDx.each(function() {
+							selectedDx.each(function () {
 								last = $(this).insertAfter(last);	// WITH last = SAME POSITION OF SELECTED OPTION AFTER MOVE
 								hLast = el.find("[value='" + $(this).val() + "']").insertAfter(hLast);	// HIDDEN SELECT
 							});
@@ -507,9 +504,9 @@
 				$(this).next().show();
 			});
 		},
-		destroy : function( ) {
+		destroy: function () {
 			return this.each(function () {
-				var	el = $(this);
+				var el = $(this);
 				var data = el.data('multiselect2side');
 
 				if (!data)
@@ -518,7 +515,7 @@
 				el.show().next().remove();
 			});
 		},
-		addOption : function(options) {
+		addOption: function (options) {
 			var oAddOption = {
 				name: false,
 				value: false,
@@ -526,7 +523,7 @@
 			};
 
 			return this.each(function () {
-				var	el = $(this);
+				var el = $(this);
 				var data = el.data('multiselect2side');
 
 				if (!data)
@@ -535,14 +532,14 @@
 				if (options)
 					$.extend(oAddOption, options);
 
-				var	strEl = "<option value='" + oAddOption.value + "' " + (oAddOption.selected ? "selected" : "") + " >" + oAddOption.name + "</option>";
+				var strEl = "<option value='" + oAddOption.value + "' " + (oAddOption.selected ? "selected" : "") + " >" + oAddOption.name + "</option>";
 
 				el.append(strEl);
 
 				// ELEMENTS
 				var allSel = el.next().children(".ms2side__select").children("select");
-				var	leftSel = (data.selectedPosition == 'right') ? allSel.eq(0) : allSel.eq(1);
-				var	rightSel = (data.selectedPosition == 'right') ? allSel.eq(1) : allSel.eq(0);
+				var leftSel = (data.selectedPosition == 'right') ? allSel.eq(0) : allSel.eq(1);
+				var rightSel = (data.selectedPosition == 'right') ? allSel.eq(1) : allSel.eq(0);
 
 				if (oAddOption.selected)
 					rightSel.append(strEl).trigger('change');
@@ -552,14 +549,14 @@
 		}
 	};
 
-  $.fn.multiselect2side = function( method ) {
-    if ( methods[method] ) {
-      return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-    } else if ( typeof method === 'object' || ! method ) {
-      return methods.init.apply( this, arguments );
-    } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.multiselect2side' );
-    }    
-  };
+	$.fn.multiselect2side = function (method) {
+		if (methods[method]) {
+			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+		} else if (typeof method === 'object' || !method) {
+			return methods.init.apply(this, arguments);
+		} else {
+			$.error('Method ' + method + ' does not exist on jQuery.multiselect2side');
+		}
+	};
 
 })(jQuery);
