@@ -10,27 +10,66 @@
  *
  */
 
-(function($)
-{
+(function($){
 	// SORT INTERNAL
 	function internalSort(a, b) {
 		var compA = $(a).text().toUpperCase();
 		var compB = $(b).text().toUpperCase();
 		return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
 	};
-
-	var methods = {
+	var lang = {
+		labelTop: 'Top',
+		labelBottom: 'Bottom',
+		labelUp: 'Up',
+		labelDown: 'Down',
+		labelSort: 'Sort',
+		labelsx: 'Available',
+		labeldx: 'Selected',
+		titleSort: 'Sort',
+		titleUp: 'Move up selected option',
+		titleDown: 'Move down selected option',
+		titleBottom: 'Move on bottom selected option',
+		titleTop: 'Move on top selected option',
+		titleAddOne: 'Add Selected',
+		titleAddAll: 'Add All',
+		titleRemoveOne: 'Remove Selected',
+		titleRemoveAll: 'Remove All',
+	},
+	lang_zh_CN = {
+		labelTop: '最顶',
+		labelBottom: '最底',
+		labelUp: '上移',
+		labelDown: '下移',
+		labelSort: '排序',
+		labelsx: '备选',
+		labeldx: '已选',
+		titleSort: '排序',
+		titleUp: '上移',
+		titleDown: '下移',
+		titleBottom: '移到最底部',
+		titleTop: '移到最顶部',
+		titleAddOne: '选择',
+		titleAddAll: '全选',
+		titleRemoveOne: '移除',
+		titleRemoveAll: '清空',
+	},
+	i18n = {'en':lang,'zh-CN':lang_zh_CN},
+	button = {
+		buttonRightAddOne: '&rsaquo;',
+		buttonRightAddAll: '&raquo;',
+		buttonRightRemoveOne: '&lsaquo;',
+		buttonRightRemoveAll: '&laquo;',
+		buttonLeftAddOne: '<i class="icon-chevron-left"></i>',
+		buttonLeftAddAll: '<i class="icon-backward"></i></p>',
+		buttonLeftRemoveOne: '<i class="icon-chevron-right"></i>',
+		buttonLeftRemoveAll: '<i class="icon-forward"></i>'
+	},
+	methods = {
 		init : function(options) {
 			var o = {
 				selectedPosition: 'right',
+				lang:'en',
 				moveOptions: true,
-				labelTop: 'Top',
-				labelBottom: 'Bottom',
-				labelUp: 'Up',
-				labelDown: 'Down',
-				labelSort: 'Sort',
-				labelsx: 'Available',
-				labeldx: 'Selected',
 				maxSelected: -1,
 				autoSort: false,
 				autoSortAvailable: false,
@@ -38,8 +77,10 @@
 				caseSensitive: false,
 				delay: 200,
 				optGroupSearch: false,
-				minSize: 6
+				minSize: 6,
 			};
+			$.extend(o, i18n[o.lang]||{});
+			$.extend(o, button);
 
 			return this.each(function () {
 				var	el = $(this);
@@ -67,11 +108,11 @@
 				// UP AND DOWN
 				var divUpDown =
 						"<div class='ms2side__updown'>" +
-							"<p class='SelSort' title='Sort'>" + o.labelSort + "</p>" +
-							"<p class='MoveTop' title='Move on top selected option'>" + o.labelTop + "</p>" +
-							"<p class='MoveUp' title='Move up selected option'>" + o.labelUp + "</p>" +
-							"<p class='MoveDown' title='Move down selected option'>" + o.labelDown + "</p>" +
-							"<p class='MoveBottom' title='Move on bottom selected option'>" + o.labelBottom + "</p>" +
+							"<p class='SelSort' title='"+o.titleSort+"'>" + o.labelSort + "</p>" +
+							"<p class='MoveTop' title='"+o.titleTop+"'>" + o.labelTop + "</p>" +
+							"<p class='MoveUp' title='"+o.titleUp+"'>" + o.labelUp + "</p>" +
+							"<p class='MoveDown' title='"+o.titleDown+"'>" + o.labelDown + "</p>" +
+							"<p class='MoveBottom' title='"+o.titleBottom+"'>" + o.labelBottom + "</p>" +
 						"</div>";
 
 				// INPUT TEXT FOR SEARCH OPTION
@@ -115,15 +156,15 @@
 						"<div class='ms2side__options'>" +
 							((o.selectedPosition == 'right')
 							?
-							("<p class='AddOne' title='Add Selected'>&rsaquo;</p>" +
-							"<p class='AddAll' title='Add All'>&raquo;</p>" +
-							"<p class='RemoveOne' title='Remove Selected'>&lsaquo;</p>" +
-							"<p class='RemoveAll' title='Remove All'>&laquo;</p>")
+							("<p class='AddOne' title='"+o.titleAddOne+"'>"+o.buttonRightAddOne+"</p>" +
+							"<p class='AddAll' title='"+o.titleAddAll+"'>"+o.buttonRightAddAll+"</p>" +
+							"<p class='RemoveOne' title='"+o.titleRemoveOne+"'>"+o.buttonRightRemoveOne+"</p>" +
+							"<p class='RemoveAll' title='"+o.titleRemoveAll+"'>"+o.buttonRightRemoveAll+"</p>")
 							:
-							("<p class='AddOne' title='选择'><i class='icon-chevron-left'></i></p>" +
-							"<p class='AddAll' title='全选'><i class='icon-backward'></i></p>" +
-							"<p class='RemoveOne' title='移除'><i class='icon-chevron-right'></i></p>" +
-							"<p class='RemoveAll' title='清空'><i class='icon-forward'></i></p>")
+							("<p class='AddOne' title='"+o.titleAddOne+"'>"+o.buttonLeftAddOne+"</p>" +
+							"<p class='AddAll' title='"+o.titleAddAll+"'>"+o.buttonLeftAddAll+"</p>" +
+							"<p class='RemoveOne' title='"+o.titleRemoveOne+"'>"+o.buttonLeftRemoveOne+"</p>" +
+							"<p class='RemoveAll' title='"+o.titleRemoveAll+"'>"+o.buttonLeftRemoveAll+"</p>")
 							) +
 						"</div>" +
 						"<div class='ms2side__select'>" +
@@ -552,14 +593,17 @@
 		}
 	};
 
-  $.fn.multiselect2side = function( method ) {
-    if ( methods[method] ) {
-      return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-    } else if ( typeof method === 'object' || ! method ) {
-      return methods.init.apply( this, arguments );
-    } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.multiselect2side' );
-    }    
-  };
-
+  	$.fn.multiselect2side = function( method ) {
+  	  if ( methods[method] ) {
+  	    return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+  	  } else if ( typeof method === 'object' || ! method ) {
+  	    return methods.init.apply( this, arguments );
+  	  } else {
+  	    $.error( 'Method ' +  method + ' does not exist on jQuery.multiselect2side' );
+  	  }    
+  	};
+	window.multiselect2side={
+		i18n:i18n,
+		button:button
+	};
 })(jQuery);
