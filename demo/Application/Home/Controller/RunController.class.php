@@ -221,6 +221,23 @@ class RunController extends HomeController {
 
 	public function edit_save()
 	{
+        $id=I('run_process',0,'intval');
+        $run_process = D('run_process')->where(array('id'=>$id))->find();
+        if(!$run_process)$this->error('error');
+        
+        //从缓存中获取数据
+        $map = array(
+            'run_id'=>$run_process['run_id'],
+        );
+        $run_cache = D('run_cache')->where($map)->find();
+        $run_cache['run_form'] = json_decode($run_cache['run_form'],true);
+        $run_cache['run_flow'] = json_decode($run_cache['run_flow'],true);
+        $run_cache['run_flow_process'] = json_decode($run_cache['run_flow_process'],true);
+        
+        import('@.Org.Formdesign');
+        $formdesign = new \Formdesign;
+        $data=$formdesign->unparse_data($run_cache['run_form'],$_POST);
+        dump($data);
 		echo '未完成';
 	}
 
