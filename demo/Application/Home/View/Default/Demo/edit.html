@@ -43,7 +43,11 @@
 </p>
 
 <p>
-    <label>选择表单</label>
+    <label>操作数据</label>
+    <select name="op_data" id="">
+        <option value="0">自定义表单数据</option>
+        <option value="1">模块数据</option>
+    </select>
     <select name="form_id">
         <volist name="form_list" id="vo">
         <option value="{$vo.id}" <if condition="$vo['id'] eq $one['form_id']">selected="selected"</if>>{$vo.form_name}</option>
